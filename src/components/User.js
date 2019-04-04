@@ -18,7 +18,7 @@ import React, {Component} from 'react';
               user === null ?
               this.props.setCurrentUser("Guest")
               :
-              this.props.setCurrentUser(user.displayName); } 
+              this.props.setCurrentUser(user.displayName); }
 
            );
       }

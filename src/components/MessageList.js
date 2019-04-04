@@ -8,8 +8,7 @@ class MessageList extends Component {
     this.state = {
       messages: [],
       currentRoomMessages:[],
-      currentRoom: {roomName: "", id: ""},
-      sending: "false"
+      currentRoom: {roomName: "", id: ""}
     };
 
 this.messagesRef = this.props.firebase.database().ref('Messages');
@@ -22,12 +21,13 @@ this.currentRoom = this.props.currentRoom;
           const message = snapshot.val();
           message.key = snapshot.key;
           this.setState({ messages: this.state.messages.concat( message ) })
-          } );
+          message.roomId === this.state.currentRoom.id  ?
+          this.setState({currentRoomMessages: this.state.currentRoomMessages.concat(message)})
+          :
+          console.log("");
+        });
           this.setState({currentRoom: this.props.currentRoom})
-
       }
-
-
 
       componentWillReceiveProps(nextProps){
          this.setState({currentRoom: {roomName: nextProps.currentRoom.roomName, id: nextProps.currentRoom.id} });
@@ -50,29 +50,13 @@ this.currentRoom = this.props.currentRoom;
             sentAt: timeStamp,
             roomId: this.state.currentRoom.id
         };
-
              newMessage.roomId === "" ?
             alert("Select a Room to Send Message!")
             :
             this.messagesRef.push(newMessage);
-
-        console.log(this.state.messages);
         var form = document.getElementById("new-message");
         form.reset();
-        this.setState({currentRoomMessages: this.state.currentRoomMessages.concat({
-          username: this.state.currentUser,
-          content: messageContent,
-          sentAt: Date.now(),
-          roomId: this.state.currentRoom.id
-        })});
       }
-
-
-
-
-
-
-
 
       convert(timestamp){
             var myDate = new Date( timestamp);
