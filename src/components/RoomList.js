@@ -27,17 +27,22 @@ this.currentRoomRef = this.props.firebase.database().ref('CurrentRoom');
              });
             }
 
+
+
            createRoom(event){
              event.preventDefault();
-
              const newRoomName = this.refs.newChatName.value;
+
              this.roomsRef.push({
                name: newRoomName
              });
+
+             console.log(this.state.currentRoom);
              var form = document.getElementById("new-chat-room");
              form.reset();
-             console.log(this.state.currentRoom);
            }
+
+
 
            setCurrentRoom(newName,newId){
              this.props.setCurrentRoom(newName,newId);
@@ -56,8 +61,9 @@ this.currentRoomRef = this.props.firebase.database().ref('CurrentRoom');
           </span>
         )}
       </span>
-      <span>{this.state.currentRoom.roomName === ""  ?
-      <span> Select Chat Room To View Messages </span> 
+      <span>
+      {this.state.currentRoom.roomName === ""  ?
+      <span> Select Chat Room To View Messages </span>
       :
       <span> {this.state.currentRoom.roomName} is the current room. </span>}
        </span>

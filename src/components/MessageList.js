@@ -8,7 +8,8 @@ class MessageList extends Component {
     this.state = {
       messages: [],
       currentRoomMessages:[],
-      currentRoom: {roomName: "", id: ""}
+      currentRoom: {roomName: "", id: ""},
+      sending: "false"
     };
 
 this.messagesRef = this.props.firebase.database().ref('Messages');
@@ -23,7 +24,10 @@ this.currentRoom = this.props.currentRoom;
           this.setState({ messages: this.state.messages.concat( message ) })
           } );
           this.setState({currentRoom: this.props.currentRoom})
+
       }
+
+
 
       componentWillReceiveProps(nextProps){
          this.setState({currentRoom: {roomName: nextProps.currentRoom.roomName, id: nextProps.currentRoom.id} });
@@ -31,28 +35,44 @@ this.currentRoom = this.props.currentRoom;
 
          const activeRoom = nextProps.currentRoom.id;
          const messages = this.state.messages;
-         const result = messages.filter( e => e.roomId === activeRoom)
-          console.log(nextProps.currentRoom.id);
-        this.setState({currentRoomMessages: result})
+         const result = messages.filter( e => e.roomId === activeRoom);
+        this.setState({currentRoomMessages: result});
 
       }
 
       sendMessage(event){
         event.preventDefault();
         const timeStamp = this.timeStamp;
-        const newMessage = this.refs.newMessage.value;
-        this.messagesRef.push({
-
+        const messageContent = this.refs.newMessage.value;
+        const newMessage ={
             username: this.state.currentUser,
-            content: newMessage,
+            content: messageContent,
             sentAt: timeStamp,
             roomId: this.state.currentRoom.id
+        };
 
-        });
+             newMessage.roomId === "" ?
+            alert("Select a Room to Send Message!")
+            :
+            this.messagesRef.push(newMessage);
+
         console.log(this.state.messages);
         var form = document.getElementById("new-message");
         form.reset();
+        this.setState({currentRoomMessages: this.state.currentRoomMessages.concat({
+          username: this.state.currentUser,
+          content: messageContent,
+          sentAt: Date.now(),
+          roomId: this.state.currentRoom.id
+        })});
       }
+
+
+
+
+
+
+
 
       convert(timestamp){
             var myDate = new Date( timestamp);
@@ -76,7 +96,6 @@ this.currentRoom = this.props.currentRoom;
 
             <button type="submit"> Send Message </button>
        </form>
-       <span> {this.state.currentRoom.name} </span>
       </section>
     )
   }

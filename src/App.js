@@ -4,6 +4,7 @@ import './App.css';
 import * as firebase from 'firebase';
 import RoomList from './components/RoomList.js';
 import MessageList from './components/MessageList.js';
+import User from './components/User.js';
 
 var config = {
   apiKey: "AIzaSyBhVT4DvrKN5KMEh1Dn6zeUtOH4DGj6Jl0",
@@ -40,35 +41,31 @@ this.userRef = firebase.database().ref('CurrentUser');
 
               setCurrentRoom(newName, newId){
                 this.setState({currentRoom: {roomName: newName, id: newId} });
-                console.log(this.state.currentRoom.id + "APP");
+                
 
               }
 
-              setUser(event){
-                event.preventDefault();
-                const newUserName = this.refs.userName.value;
-                this.setState({currentUser: newUserName })
-                console.log(newUserName);
-                var form = document.getElementById("set-username");
-                form.reset();
+
+
+              setCurrentUser(user){
+                this.setState({currentUser: user })
               }
 
   render() {
     return (
       <div className="App">
+
       <span> You are currently logged in as {this.state.currentUser}.</span>
       <br/>
-        <form id="set-username" onSubmit={this.setUser.bind(this)}>
-          Change UserName: <br/>
-            <input id="UserName" type="text" ref="userName"/> <br/>
-
-            <button type="submit"> Set UserName </button>
-          </form>
         <RoomList
          currentRoom={this.state.currentRoom}
          firebase={firebase}
          setCurrentRoom={(newName, newId) => this.setCurrentRoom(newName, newId)}
         />
+        <User
+        firebase={firebase}
+        setCurrentUser={this.setCurrentUser.bind(this)}
+         />
         <MessageList
         currentRoom={this.state.currentRoom}
         currentUser={this.state.currentUser}
